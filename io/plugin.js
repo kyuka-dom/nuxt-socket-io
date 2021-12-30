@@ -545,10 +545,14 @@ const register = {
   listenersVuex({ ctx, socket, entries, storeFn, useSocket }) {
     entries.forEach((entry) => {
       const { pre, post, evt, mapTo } = parseEntry(entry)
-      async function vuexListenerEvt(resp) {
-        debug('Vuex listener received data', { evt, resp })
+      async function vuexListenerEvt(resp, obj) {
+        debug('Vuex listener received data', { evt, resp, obj })
         await runHook(ctx, pre)
-        storeFn(mapTo, resp)
+        if (obj) {
+          storeFn(mapTo, {resp, obj})
+        } else { 
+          storeFn(mapTo, resp)
+        }
         runHook(ctx, post, resp)
       }
 
